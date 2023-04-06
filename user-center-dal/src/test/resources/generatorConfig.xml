@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE generatorConfiguration
+        PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN"
+        "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
+
+<!--suppress MybatisGenerateCustomPluginInspection -->
+<generatorConfiguration>
+
+    <properties resource="jdbc.properties"/>
+
+    <context id="Mysql" targetRuntime="MyBatis3Simple" defaultModelType="flat">
+
+        <property name="javaFileEncoding" value="UTF-8"/>
+        <property name="useMapperCommentGenerator" value="true"/>
+
+        <plugin type="com.abysscat.usercenter.dal.CustomMapperPlugin">
+            <property name="mappers" value="tk.mybatis.mapper.common.Mapper"/>
+            <property name="lombok" value="Data,Accessors"/>
+            <property name="caseSensitive" value="true"/>
+            <property name="generateColumnConsts" value="true"/>
+            <property name="forceAnnotation" value="false"/>
+            <property name="beginningDelimiter" value="`"/>
+            <property name="endingDelimiter" value="`"/>
+        </plugin>
+
+        <!--通用代码生成器插件-->
+        <plugin type="tk.mybatis.mapper.generator.TemplateFilePlugin">
+            <property name="targetProject" value="${module.path}"/>
+            <property name="targetPackage" value="${mapper.package}"/>
+            <property name="templatePath" value="generator/mapper-${db.name}.ftl"/>
+            <property name="mapperSuffix" value="Mapper"/>
+            <property name="fileName" value="${tableClass.shortClassName}${mapperSuffix}.java"/>
+        </plugin>
+
+        <plugin type="org.mybatis.generator.plugins.SerializablePlugin" />
+
+        <jdbcConnection
+                driverClass="${jdbc.driver}"
+                connectionURL="${jdbc.url}"
+                userId="${jdbc.username}"
+                password="${jdbc.password}"/>
+        <!--MyBatis Model-->
+        <javaModelGenerator targetPackage="${entity.package}"
+                            targetProject="${module.path}"/>
+
+        <table tableName="user_info">
+            <generatedKey column="id" sqlStatement="JDBC"/>
+        </table>
+    </context>
+</generatorConfiguration>

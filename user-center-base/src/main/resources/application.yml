@@ -1,0 +1,47 @@
+server.port: 8080
+app.env: dev
+app.name: usercenter
+
+autoload:
+  cache:
+    config:
+      namespace: ${app.name}.${app.env}
+    enable: true
+    proxy-target-class: true
+
+mybatis:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+logging:
+  level:
+    root: INFO
+    druid.sql.Statement: DEBUG
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} %5p [${spring.cloud.config.name:${spring.application.name:-}},%X{X-B3-TraceId:-},%X{X-B3-SpanId:-},%X{X-Span-Export:-}] [reqid:%X{requestid}] ${PID:- } --- [%t] %-40.40logger{39} : %m%n${LOG_EXCEPTION_CONVERSION_WORD:%wEx}"
+    file: "%d{yyyy-MM-dd HH:mm:ss.SSS} %5p [${spring.cloud.config.name:${spring.application.name:-}},%X{X-B3-TraceId:-},%X{X-B3-SpanId:-},%X{X-Span-Export:-}] [reqid:%X{requestid}] ${PID:- } --- [%t] %-40.40logger{39} : %m%n${LOG_EXCEPTION_CONVERSION_WORD:%wEx}"
+
+spring:
+  application:
+    name: ${app.name}
+
+  datasource:
+    type: com.zaxxer.hikari.HikariDataSource
+    usercenter:
+      hikari:
+        jdbc-url: jdbc:p6spy:mysql://127.0.0.1:8100/usercenter?useUnicode=true&characterEncoding=utf-8&autoReconnect=true
+        username: admin
+        password: 123456
+        driver-class-name: com.p6spy.engine.spy.P6SpyDriver
+        connection-test-query: SELECT 1
+        minimum-idle: 1
+        maximum-pool-size: 20
+        pool-name: usercenter-pool
+        max-lifetime: 540000
+        idle-timeout: 480000
+
+pagehelper:
+  helper-dialect: mysql
+  reasonable: false
+  support-methods-arguments: true
+  params: count=countSql
